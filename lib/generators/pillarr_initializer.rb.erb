@@ -1,0 +1,11 @@
+Pillarr.configure do |c|
+  c.logger = Rails.logger
+  c.output_file = Rails.root.join('tmp', 'collector.json')
+
+  c.collectors  = <<-YAML
+    system_metric:
+    directory_size:
+      paths:
+        - <%%= Rails.root.join('log') %>
+  YAML
+end
