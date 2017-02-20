@@ -6,6 +6,12 @@ module Pillarr
         collector.collect
         collector.write!
       end
+
+      def last_run_data
+        collector = new
+        collector.read!
+        collector.raw_data || {}
+      end
     end
 
     def initialize
@@ -24,6 +30,11 @@ module Pillarr
         file.truncate(0)
         file.write(raw_data.to_json)
       end
+    end
+
+    def read!
+      return if Pillarr.configuration.output_file.nil?
+      @data = JSON.parse(File.open(Pillarr.configuration.output_file).read) rescue nil
     end
 
     def print
