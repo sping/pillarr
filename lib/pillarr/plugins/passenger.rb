@@ -3,7 +3,7 @@ module Pillarr
   module Plugins
     class Passenger < Pillarr::Plugin
       OPTIONS = <<-EOS
-        passenger_status_command: passenger-status
+        passenger_status_command: sudo /usr/bin/passenger-status
       EOS
 
       def report_template
@@ -21,7 +21,7 @@ module Pillarr
       private
 
       def collect_passenger_status
-        cmd  = option(:passenger_status_command) || 'passenger-status'
+        cmd  = option(:passenger_status_command) || 'sudo /usr/bin/passenger-status'
         data = `#{cmd} 2>&1`
         unless $?.success?
           return error("Could not get data from command: #{cmd}. Error:  #{data}")

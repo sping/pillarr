@@ -19,19 +19,19 @@ module Pillarr
       private
 
       def collect_path_info(path)
-        output = `du -s #{path} 2>&1`
+        output = `du -s #{path}/ 2>&1`
         if !$?.success?
           return error("Error fetching directory size for [#{path}]")
         end
         size_in_bytes = output.split("\n").last.split("\t").first.to_i
         report(path, {
           bytes: size_in_bytes,
-          megabytes: b_to_mb(size_in_bytes)
+          megabytes: to_mb(size_in_bytes)
         })
       end
 
-      def b_to_mb(bytes)
-        bytes && bytes.to_f / 1024 / 1024
+      def to_mb(bytes)
+        bytes && bytes.to_f / 1024
       end
     end
   end
