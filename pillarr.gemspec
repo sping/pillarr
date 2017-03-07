@@ -34,6 +34,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rspec', '~> 3.0'
 
+  spec.add_runtime_dependency 'elif', '>= 0.1.0'
+  spec.add_runtime_dependency 'request-log-analyzer', '1.13.4'
   spec.add_runtime_dependency 'parallel', '>= 1.10.0'
   spec.add_runtime_dependency 'activesupport', '>= 4.1.8'
   spec.add_runtime_dependency 'server_metrics', '>= 1.2.5'
