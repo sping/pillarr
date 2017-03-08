@@ -32,16 +32,21 @@ module Pillarr
             percentile_99: nil,
             percentile_95: nil,
             percentile_90: nil
-          }
+          },
+          log: nil,
+          minutes_to_analyze: 0
         }
       end
 
       def collect_data
         patch
-        if setup == false
-          # go error, return
-          return
-        end
+        setup_success = setup
+
+        # always report log, and minutes to analyze
+        report(:minutes_to_analyze, minutes_to_analyze)
+        report(:log, @log)
+
+        return if setup_success == false
 
         report(:processed_requests, @requests.count)
 
@@ -82,9 +87,6 @@ module Pillarr
       end
 
       def setup
-        # minutes_ago_timestamp
-        minutes_to_analyze = option(:minutes_to_analyze).to_i
-        minutes_to_analyze = 5 if minutes_to_analyze == 0
         @minutes_ago_timestamp = (Time.now - minutes_to_analyze * 60).strftime('%Y%m%d%H%M%S').to_i
         # @minutes_ago_timestamp = Time.new(2014, 2, 17, 6, 38, 25).strftime('%Y%m%d%H%M%S').to_i
         # request log analyzer
@@ -95,6 +97,11 @@ module Pillarr
 
         unless File.exist?(@log)
           error("Error processing log [#{@log}] - FILE NOT FOUND")
+          return false
+        end
+
+        # if file is empty (might be because of logrotate) return without error
+        if File.zero?(@log)
           return false
         end
 
@@ -136,6 +143,12 @@ module Pillarr
         rank = pcnt / 100.0 * (sorted_array.length - 1)
         lower, upper = sorted_array[rank.floor, 2]
         lower + (upper - lower) * (rank - rank.floor)
+      end
+
+      def minutes_to_analyze
+        minutes = option(:minutes_to_analyze).to_i
+        minutes = 5 if minutes == 0
+        minutes
       end
 
       def patch
