@@ -4,8 +4,8 @@ module Pillarr
   # Inspired by: https://github.com/scoutapp/scout-client/blob/master/lib/scout/plugin.rb
   class Plugin
     # A new class for plugin Timeout errors.
-    # Default 60 seconds timeout when running collectors
-    DEFAULT_COLLECTOR_TIMEOUT = 60
+    # Default 15 seconds timeout when running collectors
+    DEFAULT_COLLECTOR_TIMEOUT = 15
 
     class << self
       def needs(*libraries)
@@ -33,7 +33,7 @@ module Pillarr
             Pillarr.error "Custom plugin | failed to load custom plugin: '#{plugin_name.classify}'"
           end
         rescue Exception => e
-          Pillarr.debug "Failed creating instance from: #{plugin_name}. Message: #{e.message}"
+          Pillarr.error "Failed creating instance from: #{plugin_name}. Message: #{e.message}"
         ensure
           return if plugin_class.nil?
           Pillarr.debug "Successfully created instance from '#{plugin_class}'"
