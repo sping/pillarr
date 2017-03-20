@@ -26,7 +26,7 @@ module Pillarr
           return error("Error processing cert [#{cert}] - FILE NOT FOUND")
         end
 
-        report_key = cert.split('/').last
+        report_key = cert.split('/').last.gsub('.', '_')
         certificate = OpenSSL::X509::Certificate.new(File.read(cert))
         expiration = ((Time.at(certificate.not_after) - Time.at(@today)) / 60 / 60 / 24).to_i
         report(report_key, {
