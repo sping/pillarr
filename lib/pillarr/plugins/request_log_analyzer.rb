@@ -10,6 +10,8 @@ module Pillarr
 
       needs 'elif', 'request_log_analyzer'
 
+      RLA_TIMESTAMP_FORMAT = '%Y%m%d%H%M%S'
+
       def report_template
         {
           processed_requests: 0,
@@ -50,8 +52,9 @@ module Pillarr
 
         report(:processed_requests, @requests.count)
 
-        first_timestamp = @requests.last[:timestamp] rescue nil
-        last_timestamp = @requests.first[:timestamp] rescue nil
+        first_timestamp = rla_timestamp_to_epoch(@requests.last[:timestamp])
+        last_timestamp  = rla_timestamp_to_epoch(@requests.first[:timestamp])
+
         report(:timestamps, {
           first: first_timestamp,
           last: last_timestamp
@@ -87,8 +90,7 @@ module Pillarr
       end
 
       def setup
-        @minutes_ago_timestamp = (Time.now - minutes_to_analyze * 60).strftime('%Y%m%d%H%M%S').to_i
-        # @minutes_ago_timestamp = Time.new(2014, 2, 17, 6, 38, 25).strftime('%Y%m%d%H%M%S').to_i
+        @minutes_ago_timestamp = (Time.now - minutes_to_analyze * 60).strftime(RLA_TIMESTAMP_FORMAT).to_i
         # request log analyzer
         @line_definition  = ::RequestLogAnalyzer::FileFormat::Apache.access_line_definition(option(:format))
         @request          = ::RequestLogAnalyzer::FileFormat::Apache.new.request
@@ -177,6 +179,10 @@ module Pillarr
         ::RequestLogAnalyzer::FileFormat::Apache::LOG_DIRECTIVES['i']['IGNORE'] = {
           regexp: '(.*)', captures: [{ name: :ignore, type: :nillable_string }]
         }
+      end
+
+      def rla_timestamp_to_epoch(timestamp)
+        Time.strptime(timestamp.to_s, RLA_TIMESTAMP_FORMAT).to_i rescue nil
       end
 
       # taken from Rack::Utils::HTTP_STATUS_CODES
