@@ -47,7 +47,8 @@ module Pillarr
 
         apps = {}
         xml.root.each_element("/info/supergroups/*") do |e|
-          key = e.elements['group/app_root'].text[1..-1].gsub('/', '_')
+          key = e.elements['group/name'].text.gsub(/[\/ .()]/, '_')
+          key = key.split('_').reject{ |a| a == '' }.join('_')
           apps[key] = {
             path: e.elements['group/app_root'].text,
             wait_list_size: e.elements['get_wait_list_size'].text.to_i,
