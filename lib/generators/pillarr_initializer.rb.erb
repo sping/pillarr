@@ -1,6 +1,7 @@
 Pillarr.configure do |c|
   c.logger = Rails.logger
   c.output_file = Rails.root.join('tmp', 'collector.json')
+  c.lock_file = Rails.root.join('tmp', 'pids', 'cron', 'pillarr.lock')
 
   c.collectors  = <<-YAML
     system_metric:

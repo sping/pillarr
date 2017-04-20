@@ -8,9 +8,12 @@ module Pillarr
 
     attr_accessor :output_file
 
+    attr_accessor :lock_file
+
     def initialize
       self.collectors ||= Hash.new
       self.collector_instances ||= []
+      self.lock_file ||= '/tmp/pillar.cron.lock'
       self.logger ||= setup_logger
     end
 

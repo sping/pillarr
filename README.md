@@ -52,6 +52,22 @@ collector.collect
 results = collector.raw_data
 ```
 
+## Cron
+
+When using you want pillarr to run as a cronjob you could use the gem [whenever](https://github.com/javan/whenever)
+
+Just add the following into your `config/schedule.rb`
+
+```ruby
+job_type :nice_rake, "cd :path && :environment_variable=:environment nice -n 12 :bundle_command rake :task --silent :output"
+
+every 1.minute do
+  nice_rake 'pillarr:collect'
+end
+```
+
+This will run pillarr every minute with a `nice` value of `12`
+
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
