@@ -14,7 +14,7 @@ module Pillarr
           max_pool_size: 0,
           used_pool_size: 0,
           wait_list_size: 0,
-          apps: []
+          apps: {}
         }
       end
 
@@ -47,8 +47,8 @@ module Pillarr
 
         apps = {}
         xml.root.each_element("/info/supergroups/*") do |e|
-          key = e.elements['group/name'].text.gsub(/[\/ .()]/, '_')
-          key = key.split('_').reject{ |a| a == '' }.join('_')
+          key = e.elements['group/name'].text.gsub(/[\/ -.()]/, '_').downcase
+          key = key.split('_').reject{ |a| a == '' }.join('_').split(/[^0-9a-z\_]/i).join
           apps[key] = {
             path: e.elements['group/app_root'].text,
             wait_list_size: e.elements['get_wait_list_size'].text.to_i,
