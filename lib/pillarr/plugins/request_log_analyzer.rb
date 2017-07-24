@@ -52,6 +52,8 @@ module Pillarr
 
         report(:processed_requests, @requests.count)
 
+        return if @requests.count == 0
+
         first_timestamp = rla_timestamp_to_epoch(@requests.last[:timestamp])
         last_timestamp  = rla_timestamp_to_epoch(@requests.first[:timestamp])
 
